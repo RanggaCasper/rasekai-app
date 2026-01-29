@@ -1,13 +1,25 @@
 # RaSekai Release Information
 
 **Version:** 1.0.0+1  
-**Build Date:** 2026-01-29 10:15:06 UTC  
-**Commit SHA:** f4b366f54117c9f5ea0f24468733b5afb7794aed  
+**Build Date:** 2026-01-29 10:37:30 UTC  
+**Commit SHA:** d00f7ae57131bf5183da92b895748271f229e8de  
 **Branch:** main
 
 ## Commit Message
 ```
-build arm64 only
+feat: update package name to com.racas.rasekai and add internet permissions
+
+Changes:
+- Add INTERNET and ACCESS_NETWORK_STATE permissions for network connectivity
+- Change package name from com.example.rasekai to com.racas.rasekai
+- Move MainActivity to new package structure
+- Create GitHub Release tag in release repository instead of source
+- Add documentation for additional secrets (RELEASE_REPO_OWNER, RELEASE_REPO_NAME)
+
+Fixes:
+- Release APK can now connect to internet
+- Release tags now created in release repository
+- Proper package naming for production
 ```
 
 ## Download
