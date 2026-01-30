@@ -5,6 +5,9 @@ on:
     paths:
       - 'incoming/*.apk'
 
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
