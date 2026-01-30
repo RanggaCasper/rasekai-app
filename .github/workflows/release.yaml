@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'incoming/*.apk'
+  workflow_dispatch:
 
 permissions:
   contents: write
