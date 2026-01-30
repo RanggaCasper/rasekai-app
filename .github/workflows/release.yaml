@@ -1,0 +1,69 @@
+name: Publish GitHub Release & Update Changelog
+
+on:
+  push:
+    paths:
+      - 'incoming/*.apk'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # 1. Extract version from APK filename
+      - name: Extract version
+        id: v
+        run: |
+          FILE=$(ls incoming/*.apk | head -n 1)
+          VERSION=$(basename "$FILE" | sed -E 's/RaSekai-v([0-9.]+)\.apk/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "file=$FILE" >> $GITHUB_OUTPUT
+
+      # 2. Create GitHub Release (auto notes)
+      - name: Create GitHub Release
+        id: gh_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.v.outputs.version }}
+          name: RaSekai v${{ steps.v.outputs.version }}
+          files: ${{ steps.v.outputs.file }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_REPO_TOKEN }}
+
+      # 3. Generate / update CHANGELOG.md
+      - name: Update CHANGELOG.md
+        run: |
+          VERSION="${{ steps.v.outputs.version }}"
+          DATE=$(date -u +"%Y-%m-%d")
+
+          # Fetch release notes via GitHub API
+          NOTES=$(gh release view v$VERSION --json body -q .body)
+
+          if [ ! -f CHANGELOG.md ]; then
+            echo "# 📦 Changelog" > CHANGELOG.md
+            echo "" >> CHANGELOG.md
+          fi
+
+          {
+            echo "## v$VERSION - $DATE"
+            echo ""
+            echo "$NOTES"
+            echo ""
+          } | cat - CHANGELOG.md > CHANGELOG.tmp
+
+          mv CHANGELOG.tmp CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_REPO_TOKEN }}
+
+      # 4. Cleanup APK from repo tree (optional)
+      - name: Cleanup incoming APK
+        run: |
+          rm -f incoming/*.apk
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add incoming CHANGELOG.md
+          git commit -m "📝 docs: update changelog for v${{ steps.v.outputs.version }}" || true
+          git push || true
