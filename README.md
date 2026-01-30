@@ -38,7 +38,7 @@ It is designed to provide a **smooth, immersive, and convenient experience** for
 
 Download the latest version of RaSekai from the **Releases** page:
 
-👉 **https://github.com/RnggaCasper/rasekai-app/releases**
+👉 **https://github.com/RanggaCasper/rasekai-app/releases**
 
 Each release includes:  
 - Android APK file
