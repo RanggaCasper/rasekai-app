@@ -25,6 +25,31 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "file=$FILE" >> $GITHUB_OUTPUT
 
+      - name: Generate Release Notes
+        id: notes
+        run: |
+          VERSION="${{ steps.v.outputs.version }}"
+          DATE=$(date -u +"%Y-%m-%d")
+      
+          cat > RELEASE_BODY.md << EOF
+          ## 🎉 RaSekai v$VERSION
+      
+          **Release Date:** $DATE
+      
+          ### 📦 What's Included
+          - Android APK for RaSekai v$VERSION
+          - Performance and stability improvements
+      
+          ### 📥 Download
+          - APK available in the Assets section below
+      
+          ### 🧾 Changelog
+          See full details in [CHANGELOG.md](./CHANGELOG.md)
+      
+          ---
+          *This release was automatically generated.*
+          EOF
+
       # 2. Create GitHub Release (auto notes)
       - name: Create GitHub Release
         id: gh_release
@@ -40,27 +65,27 @@ jobs:
       # 3. Generate / update CHANGELOG.md
       - name: Update CHANGELOG.md
         run: |
-          VERSION="${{ steps.v.outputs.version }}"
+          VERSION="1.0.1"
           DATE=$(date -u +"%Y-%m-%d")
-
-          # Fetch release notes via GitHub API
+      
           NOTES=$(gh release view v$VERSION --json body -q .body)
-
+      
           if [ ! -f CHANGELOG.md ]; then
             echo "# 📦 Changelog" > CHANGELOG.md
             echo "" >> CHANGELOG.md
           fi
-
+      
           {
             echo "## v$VERSION - $DATE"
             echo ""
             echo "$NOTES"
             echo ""
           } | cat - CHANGELOG.md > CHANGELOG.tmp
-
+      
           mv CHANGELOG.tmp CHANGELOG.md
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_REPO_TOKEN }}
+          GH_TOKEN: ${{ secrets.RELEASE_REPO_TOKEN }}
+
 
       # 4. Cleanup APK from repo tree (optional)
       - name: Cleanup incoming APK
