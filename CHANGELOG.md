@@ -2,6 +2,10 @@
 
 **Full Changelog**: https://github.com/RanggaCasper/rasekai-app/compare/v1.0.0+1...v1.0.1
 
+## v1.0.1 - 2026-02-08
+
+**Full Changelog**: https://github.com/RanggaCasper/rasekai-app/compare/v1.0.0+1...v1.0.1
+
 ## v1.0.1 - 2026-02-07
 
 **Full Changelog**: https://github.com/RanggaCasper/rasekai-app/compare/v1.0.0+1...v1.0.1
